@@ -6,8 +6,10 @@
 	
 	$wemo_ip = Site::getSetting('wemo_ip');
 	$hue_ip = Site::getSetting('hue_ip');
-	$hue_hash = Site::getSetting('hue_token');;
+	$hue_hash = Site::getSetting('hue_token');
 
+	$sleep = 7;
+	$recover_sleep = 30;
 	
 	$switch = new WeMo_Switch($wemo_ip);
 	$base = new Hue_Base($hue_ip, $hue_hash);
@@ -15,24 +17,39 @@
 	$lights = $base->getLights();
 	
 	$current_light_state = Hue_Light::STATE_OFF;
-	$current_switch_state = WeMo_Switch::OFF;
+	$current_switch_state = $switch->getState();
 	
 	while(true)
 	{
-		$prev_light_state = $current_light_state;
-		$current_light_state = Hue_Light::STATE_OFF;
-		foreach($lights as $l=>$name)
-		{
-			$light = $base->getLightObj($l);
-			if($light->isOn())
+		try{
+			$prev_light_state = $current_light_state;
+			$current_light_state = Hue_Light::STATE_OFF;
+			foreach($lights as $l=>$name)
 			{
-				$current_light_state = Hue_Light::STATE_ON;
-				break;
+				$light = $base->getLightObj($l);
+				if($light->isOn())
+				{
+					$current_light_state = Hue_Light::STATE_ON;
+					break;
+				}
 			}
+		}catch(Exception $e)
+		{
+			echo 'Error with Hue'.PHP_EOL;
+			$current_light_state = $prev_light_state;
+			sleep($recover_sleep);
 		}
 
 		$prev_switch_state = $current_switch_state;
+		try{
 		$current_switch_state = $switch->getState();
+		}catch(Exception $e)
+		{
+			echo 'Error with GetSwitchState'.PHP_EOL;
+			$switch->closeConnection();
+			$current_switch_state = $prev_switch_state;
+			sleep($recover_sleep);
+		}
 
 		if($prev_switch_state != $current_switch_state)
 		{
@@ -63,5 +80,6 @@
 			$current_switch_state = $switch->getState();
 		}
 
-		sleep(2);
+		$switch->closeConnection();
+		sleep($sleep);
 	}
