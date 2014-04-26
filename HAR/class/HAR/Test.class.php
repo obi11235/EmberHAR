@@ -9,7 +9,7 @@ class HAR_Test
 	static function setAllLightsWhite($lstate)
 	{
 
-		$base = new Hue_Base('192.168.1.149', 'dedaffc8e48643efddd9e5472200c77a');
+		$base = new Hue_Base(Site::getSetting('hue_ip'), Site::getSetting('hue_token'));
 
 		$lights = $base->getLights();
 
@@ -27,7 +27,7 @@ class HAR_Test
 	static function setAllLightsRed($lstate)
 	{
 
-		$base = new Hue_Base('192.168.1.149', 'dedaffc8e48643efddd9e5472200c77a');
+		$base = new Hue_Base(Site::getSetting('hue_ip'), Site::getSetting('hue_token'));
 
 		$lights = $base->getLights();
 
@@ -45,7 +45,7 @@ class HAR_Test
 	static function setAllLightsBlue($lstate)
 	{
 
-		$base = new Hue_Base('192.168.1.149', 'dedaffc8e48643efddd9e5472200c77a');
+		$base = new Hue_Base(Site::getSetting('hue_ip'), Site::getSetting('hue_token'));
 
 		$lights = $base->getLights();
 
