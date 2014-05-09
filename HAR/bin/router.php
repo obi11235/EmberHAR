@@ -15,9 +15,9 @@
 	
 	$switch = new WeMo_Switch($wemo_ip);
 	$base = new Hue_Base($hue_ip, $hue_hash);
-	$wifi_switch_white = new WifiSwitch_Switch($ip, 1);
-	$wifi_switch_red = new WifiSwitch_Switch($ip, 2);
-	$wifi_switch_blue = new WifiSwitch_Switch($ip, 3);
+	$wifi_switch_white = new WifiSwitch_Switch($wifi_switch_ip, 1);
+	$wifi_switch_red = new WifiSwitch_Switch($wifi_switch_ip, 2);
+	$wifi_switch_blue = new WifiSwitch_Switch($wifi_switch_ip, 3);
 	
 	$lights = $base->getLights();
 	
