@@ -8,12 +8,16 @@
 	$wemo_ip = Site::getSetting('wemo_ip');
 	$hue_ip = Site::getSetting('hue_ip');
 	$hue_hash = Site::getSetting('hue_token');
+	$wifi_switch_ip = Site::getSetting('wifi_switch_ip');
 
 	$sleep = 5;
 	$recover_sleep = 30;
 	
 	$switch = new WeMo_Switch($wemo_ip);
 	$base = new Hue_Base($hue_ip, $hue_hash);
+	$wifi_switch_white = new WifiSwitch_Switch($ip, 1);
+	$wifi_switch_red = new WifiSwitch_Switch($ip, 2);
+	$wifi_switch_blue = new WifiSwitch_Switch($ip, 3);
 	
 	$lights = $base->getLights();
 	
@@ -58,11 +62,13 @@
 			switch($current_switch_state)
 			{
 				case WeMo_Switch::ON: 
-					$lstate = Hue_Light::STATE_ON; 
+					$lstate = Hue_Light::STATE_ON;
+					$wifi_switch_white->setState(WifiSwitch_Switch::ON);
 					Debug::print_r('Turning Lights On'.PHP_EOL);
 					break;
 				case WeMo_Switch::OFF:
 					$lstate = Hue_Light::STATE_OFF;
+					$wifi_switch_white->setState(WifiSwitch_Switch::OFF);
 					Debug::print_r('Turning Lights Off'.PHP_EOL);
 					break;
 			}
@@ -90,6 +96,7 @@
 			}
 			
 			$switch->setState($sstate);
+			$wifi_switch_white->setState($sstate);
 			$current_switch_state = $switch->getState();
 		}
 
